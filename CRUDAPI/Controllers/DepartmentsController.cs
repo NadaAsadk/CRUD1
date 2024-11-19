@@ -2,8 +2,10 @@
 using CRUDAPI.DTOs;
 using CRUDAPI.DTOs.Departments;
 using CRUDAPI.Models;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CRUDAPI.Controllers
 {
@@ -11,23 +13,29 @@ namespace CRUDAPI.Controllers
     [ApiController]
     public class DepartmentsController : ControllerBase
     {
-        ApplicationDBContext context = new ApplicationDBContext();
+        private readonly ApplicationDBContext context;
+
+        private readonly ILogger<DepartmentsController> logger;
+        public DepartmentsController(ApplicationDBContext context, ILogger<DepartmentsController> logger) {
+            this.context = context;
+            this.logger = logger;
+        }
         [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var departments = context.Departments.Select(
+                var departments = await context.Departments.Select(
                 x => new GetDepartmentsDto()
                 {
                     Id = x.Id,
                     Name = x.Name,
                 }
-                );
-            return Ok(departments);
+                ).ToListAsync();
+                return Ok(departments);
         }
         [HttpGet("details")]
-        public IActionResult GetByID(int id)
+        public async Task<IActionResult> GetByID(int id)
         {
-            var dep = context.Departments.Find(id);
+            var dep = await context.Departments.FindAsync(id);
             if (dep is null)
                 return NotFound();
             var response = new GetDepartmentsDto()
@@ -38,35 +46,35 @@ namespace CRUDAPI.Controllers
             return Ok(response);
         }
         [HttpPost("Create")]
-        public IActionResult Create(CreateDepartmentDto depDto)
+        public async Task<IActionResult> Create(CreateDepartmentDto depDto)
         {
             Department dep = new Department()
             {
                 Name = depDto.Name
             };
-            context.Departments.Add(dep);
-            context.SaveChanges();
+            await context.Departments.AddAsync(dep);
+            await context.SaveChangesAsync();
 
             return Ok();
         }
 
         [HttpPut("Update")]
-        public IActionResult Update(int id, UpdateDepartmentDto depDto)
+        public async Task<IActionResult> Update(int id, UpdateDepartmentDto depDto)
         {
-            var entity = context.Departments.Find(id);
+            var entity = await context.Departments.FindAsync(id);
             if (entity is null)
                 return NotFound("Employee Not Found");
 
             entity.Name = depDto.Name;
             
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             return Ok(depDto);
         }
         [HttpDelete("Remove")]
-        public IActionResult Remove(int id)
+        public async Task<IActionResult> Remove(int id)
         {
-            var entity = context.Departments.Find(id);
+            var entity = await context.Departments.FindAsync(id);
             if (entity is null)
                 return NotFound("Department Not Found");
 
@@ -76,7 +84,7 @@ namespace CRUDAPI.Controllers
                 Id = entity.Id,
                 Name = entity.Name
             };
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             return Ok(res);
         }

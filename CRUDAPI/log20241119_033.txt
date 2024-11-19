@@ -1,0 +1,14 @@
+2024-11-19 18:24:16.363 +02:00 [INF] Request finished HTTP/2 POST https://localhost:7153/api/Departments/Create - 500 null application/json; charset=utf-8 1057.3779ms
+2024-11-19 18:48:07.207 +02:00 [INF] Executed DbCommand (16ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2024-11-19 18:48:07.272 +02:00 [INF] Executed DbCommand (21ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2024-11-19 18:48:07.274 +02:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2024-11-19 18:48:07.275 +02:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2024-11-19 18:48:07.318 +02:00 [INF] Executed DbCommand (28ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2024-11-19 18:48:07.331 +02:00 [INF] Applying migration '20241119164800_Products'.

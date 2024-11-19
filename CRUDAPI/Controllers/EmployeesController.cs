@@ -1,17 +1,26 @@
 ﻿using CRUDAPI.Data;
 using CRUDAPI.DTOs.Employees;
 using CRUDAPI.Models;
+using FluentValidation;
 using Mapster;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace CRUDAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("ploicy")]
     public class EmployeesController : ControllerBase
     {
-        ApplicationDBContext context = new ApplicationDBContext();
+        private readonly ApplicationDBContext context;
+
+        public EmployeesController(ApplicationDBContext context)
+        {
+            this.context = context;
+        }
         [HttpGet("GetAll")]
         public IActionResult GetAll()
         {
@@ -29,8 +38,18 @@ namespace CRUDAPI.Controllers
             return Ok(response);
         }
         [HttpPost("Create")]
-        public IActionResult Create(CreateEmployeeDto empDto)
+        public IActionResult Create(CreateEmployeeDto empDto,[FromServices] IValidator<CreateEmployeeDto> validator)
         {
+            var validationResult = validator.Validate(empDto);
+            if (!validationResult.IsValid)
+            {
+                var modelState = new ModelStateDictionary();
+                foreach (var item in validationResult.Errors)
+                {
+                    modelState.AddModelError(item.PropertyName,item.ErrorMessage);
+                }
+                return ValidationProblem();
+            }
             var emp = empDto.Adapt<Employee>();
             context.Employees.Add(emp); 
             context.SaveChanges();

@@ -1,0 +1,8 @@
+2024-11-19 18:59:42.125 +02:00 [INF] Executed DbCommand (20ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2024-11-19 18:59:42.140 +02:00 [INF] Applying migration '20241119165935_ProductsUpdate'.
+2024-11-19 18:59:42.173 +02:00 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20241119165935_ProductsUpdate', N'8.0.11');

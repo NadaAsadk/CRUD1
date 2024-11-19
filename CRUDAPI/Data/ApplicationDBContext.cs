@@ -5,11 +5,18 @@ namespace CRUDAPI.Data
 {
     public class ApplicationDBContext : DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options)
+        : base(options)
         {
-            optionsBuilder.UseSqlServer("server=.;database=API_9;Trusted_Connection=True;TrustServerCertificate=True");
         }
         public DbSet<Employee> Employees { get; set; }  
         public DbSet<Department> Departments { get; set; }
+        public DbSet<Product> Products { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Department>().HasIndex(d => d.Name).IsUnique();
+            modelBuilder.Entity<Product>().HasIndex(d => d.Name).IsUnique();
+        }
     }
 }
